@@ -10,8 +10,7 @@
         "start": "node chat.js"
     },
     "dependencies": {
-        "socket.io-client": "1.3.6",
-        "express": "4.13.2"
-    },
-    "license": "Ivan Evsyukov"
+        "socket.io-client": "1.3.5",
+        "express": "4.13.1"
+    }
 }
