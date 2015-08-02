@@ -160,17 +160,49 @@ Helpers = (function($) {
         cls.error_auth_obj.hide();
     };
 
+    methods._getCaret = function(el) {
+        if (el.selectionStart) {
+            return el.selectionStart;
+        }
+        else if (document.selection) {
+            el.focus();
+
+            var r = document.selection.createRange();
+            if (r === null) {
+                return 0;
+            }
+
+            var re = el.createTextRange(),
+                rc = re.duplicate();
+            re.moveToBookmark(r.getBookmark());
+            rc.setEndPoint('EndToStart', re);
+
+            return rc.text.length;
+        }
+        return 0;
+    }
+
     methods._setAfterLoginEvents = function(){
 
         var cls = this;
 
         cls.message_text_obj.off('focus.text').on('focus.text', function(e){
             cls.message_placeholder_obj.hide();
-        });
-
-        cls.message_text_obj.off('blur.text').on('blur.text', function(e){
+        }).off('blur.text').on('blur.text', function(e){
             if($.trim($(this).html()) === ''){
                 cls.message_placeholder_obj.show();
+            }
+        }).off('keyup.i').on('keyup.i', function(e){
+            if(e.keyCode == 13){
+                if(e.shiftKey){
+                    var content = $(this).html(),
+                        caret = cls._getCaret($(this));
+
+                    $(this).html(content.substring(0,caret)+"\n"+content.substring(caret,content.length));
+                }
+                else{
+                    cls.send_btn.trigger('click.send')
+                }
             }
         });
 
@@ -282,6 +314,12 @@ Helpers = (function($) {
     methods.setEvents = function(){
 
         var cls = this;
+
+        cls.user_name_obj.off('keyup.i').on('keyup.i', function(e){
+            if(e.keyCode == 13){
+                cls.login_btn_obj.trigger('click.login');
+            }
+        });
 
         cls.login_btn_obj.off('click.login').on('click.login', function(e){
             e.preventDefault();

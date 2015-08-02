@@ -311,3 +311,13 @@ input.check-user[type="button"][disabled="disabled"]{
     text-align: right;
     color: rgb(202, 53, 53);
 }
+.helper-block{
+    float: left;
+    margin-left: 20px;
+    font-size: 11px;
+    position: relative;
+    top: -5px;
+}
+.fleft{
+    float: left;
+}
