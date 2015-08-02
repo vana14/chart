@@ -20,7 +20,7 @@ a {
     color: #0fa5d9;
 }
 .main{
-    width: 600px;
+    width: 800px;
     margin: 0 auto;
 }
 .hentry{
@@ -224,10 +224,18 @@ table.message-control td{
     background: #FFF;
     padding: 0 9px;
 }
-.im_unread_bar_text {
+.im_unread_bar_text.plus {
     padding-left: 3px;
-    padding-right: 14px;
-    background: url('../img/pointer.png') no-repeat right 3px;
+    padding-right: 20px;
+    background: url('../img/plus-icon.png') no-repeat right 0px;
+}
+.im_unread_bar_text.minus {
+    padding-left: 21px;
+    padding-right: 0px;
+    background: url('../img/minus-icon.png') no-repeat left 0px;
+}
+.im_unread_bar_text b{
+    color: #000000;
 }
 table.rules{
     width: 100%;
@@ -253,4 +261,53 @@ table.rules td.title{
 }
 .button_blue{
     margin-bottom: 14px;
+}
+.error-holder{
+    color: rgb(219, 21, 4);
+    text-align: center;
+    font-size: 18px;
+}
+.users{
+    overflow-y: scroll;
+    height: 400px;
+    width: 242px;
+}
+.users .user-item{
+    padding: 10px;
+}
+.users .user-item:first-child{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+.users .user-item a{
+    position: relative;
+    top: -12px;
+    margin-left: 10px;
+    font-size: 13px;
+}
+.hidden{
+    visibility: hidden;
+}
+input.user-name[type="text"]{
+    margin-right: 10px;
+    font-size: 13px;
+    padding: 3px;
+    height: 16px;
+}
+input.check-user[type="button"]{
+    font-size: 13px;
+    height: 25px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+input.check-user[type="button"][disabled="disabled"]{
+    opacity: 0.6;
+    cursor: default;
+}
+.error-auth-message{
+    display: none;
+    font-size: 12px;
+    padding: 0;
+    margin: 0 64px -40px 0;
+    text-align: right;
+    color: rgb(202, 53, 53);
 }

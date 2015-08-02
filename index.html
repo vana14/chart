@@ -2,74 +2,106 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="css/main.css">
     <title>Простой чат</title>
 </head>
 <body>
     <div id="chat_holder" class="main">
         <div class="hentry">
-            <header class="entry-header" style="margin-bottom: 0;">
-                <h1 class="entry-title">Простой чат</h1>
-            </header>
-            <div style="height: 400px;overflow-y: scroll;">
-                <table id="messages" class="im_log_t" cellspacing="0" cellpadding="0"></table>
-            </div>
-            <br>
-            <div id="message_control_holder" style="background-color: #f6f6f6;">
-                <div style="border-top: 1px solid #DAE1E8; padding: 8px 15px 0 15px;">
-                    <table cellpadding="0" cellspacing="0" class="message-control">
-                        <tr>
-                            <td style="width: 65px; padding-right: 10px; vertical-align: top;">
-                                <img src="img/no-avatar.png" width="65" height="65">
-                            </td>
-                            <td class="im_write_form" style="vertical-align: top;">
-                                <div class="im_text">
-                                    <div class="im_txt_wrap im_editable_txt">
-                                        <div class="im_title_wrap" >
-                                            <input type="text" class="text im_title" maxlength="64">
-                                        </div>
-                                        <div id="new_message_placeholder" class="input_back_wrap no_select">
-                                            <div class="input_back" style="margin: 1px 1px 4px; padding: 3px 25px 5px 3px;">
-                                                <div class="input_back_content" style="width: 338px;">Введите текст сообщения</div>
-                                            </div>
-                                        </div>
-                                        <div id="message_text" class="im_editable" tabindex="0" contenteditable="true"></div>
-                                        <div class="im_txt_warn"></div>
-                                    </div>
+            <table>
+                <tr>
+                    <td>
+                        <header class="entry-header" style="margin-bottom: 0; padding-right: 0;">
+                            <h1 class="entry-title">
+                                <span>Простой чат</span>
+                                <span id="login_form" style="margin-left: 116px;">
+                                    <input id="user_name" type="text" placeholder="Укажите Ваш псевдоним" class="user-name">
+                                    <input id="login_btn" type="button" value="Войти" class="check-user">
+                                    <p id="error_auth_holder" class="error-auth-message">
+                                        Сожалеем, но псевдоним уже занят :(
+                                    </p>
+                                </span>
+                            </h1>
+                            <div id="error_holder" class="error-holder"></div>
+                        </header>
+                        <div class="hidden">
+                            <div style="height: 400px;overflow-y: scroll;">
+                                <table id="messages" class="im_log_t" cellspacing="0" cellpadding="0">
+                                    <!-- Быдло-код для css-->
+                                    <tr class="im_in" style="visibility: hidden;">
+                                        <td class="im_log_author"></td><td class="im_log_body"><div class="wrapped"><div class="im_log_author_chat_name"><a href="#" class="mem_link"></a></div><div class="im_msg_text"></div></div></td><td class="im_log_date"><a class="im_date_link"></a></td>
+                                    </tr>
+                                    <!---->
+                                </table>
+                            </div>
+                            <br>
+                            <div id="message_control_holder" style="background-color: #f6f6f6;">
+                                <div style="border-top: 1px solid #DAE1E8; padding: 8px 15px 0 15px;">
+                                    <table cellpadding="0" cellspacing="0" class="message-control">
+                                        <tr>
+                                            <td style="width: 65px; padding-right: 10px; vertical-align: top;">
+                                                <img src="img/no-avatar.png" width="65" height="65">
+                                            </td>
+                                            <td class="im_write_form" style="vertical-align: top;">
+                                                <div class="im_text">
+                                                    <div class="im_txt_wrap im_editable_txt">
+                                                        <div class="im_title_wrap" >
+                                                            <input type="text" class="text im_title" maxlength="64">
+                                                        </div>
+                                                        <div id="message_placeholder" class="input_back_wrap no_select">
+                                                            <div class="input_back" style="margin: 1px 1px 4px; padding: 3px 25px 5px 3px;">
+                                                                <div class="input_back_content" style="width: 338px;">Введите текст сообщения</div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="message_text" class="im_editable" tabindex="0" contenteditable="true"></div>
+                                                        <div class="im_txt_warn"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear_fix">
+                                                    <div class="button_blue im_send_cont fl_l">
+                                                        <button id="message_btn" style="font-size: 13px;">Отправить</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <div class="clear_fix">
-                                    <div class="button_blue im_send_cont fl_l">
-                                        <button id="message_btn" style="font-size: 13px;">Отправить</button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="hidden">
+                            <header class="entry-header" style="margin-bottom: 0;">
+                                <h1 class="entry-title">Участники</h1>
+                            </header>
+                            <div id="users" class="users"></div>
+                            <div style="height: 144px;"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
     <script src="http://localhost:8008/socket.io/socket.io.js"></script>
-    <script src="js/requireJs-2.1.9.min.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/Helpers.js"></script>
 
     <script type="text/javascript">
-        define.amd = false;
-
-        requirejs.config({
-            waitSeconds: 60,
-            baseUrl: '',
-            paths: {
-                jquery: 'js/jquery-2.1.4.min',
-                Helpers: 'js/Helpers'
-            }
-        });
-
-        require(['Helpers'], function(Helpers){
+        $(function(){
             new Helpers({
                 messages_obj: $('#messages'),
+                login_form_obj: $('#login_form'),
+                user_name_obj: $('#user_name'),
+                login_btn_obj: $('#login_btn'),
+                error_auth_obj: $('#error_auth_holder'),
                 message_text_obj: $('#message_text'),
-                send_btn: $("#message_btn")
+                message_text_obj: $('#message_text'),
+                message_placeholder_obj: $('#message_placeholder'),
+                send_btn: $("#message_btn"),
+                error_holder: $("#error_holder"),
+                users_holder: $("#users")
             }).setEvents($('#chat_holder'));
         });
     </script>
