@@ -121,11 +121,12 @@ Helpers = (function($) {
 
     methods._processingDate = function(date){
 
-        var date = new Date(),
-            currentTimeZoneOffsetInHours = -new Date().getTimezoneOffset()/60,
-            hours = date.getHours() - currentTimeZoneOffsetInHours;
+        date = new Date(date);
 
-        return  (hours<10?'0':'') + date.getHours() + ':' +
+        var currentTimeZoneOffsetInHours = -new Date().getTimezoneOffset()/60,
+            hours = parseInt(date.getHours() + currentTimeZoneOffsetInHours, 10);
+
+        return  (hours<10?'0':'') + hours + ':' +
                 (date.getMinutes()<10?'0':'') + date.getMinutes();
     };
 
@@ -252,12 +253,13 @@ Helpers = (function($) {
 
             cls.message_text_obj.empty();
 
-            var now = new Date();
+            var now = new Date(),
+                utc_now = new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
 
             cls.socket.emit('send_message', {
                 message: text,
                 user_name: cls.user_name,
-                date: new Date(now.getTime() + (now.getTimezoneOffset() * 60000))
+                date: utc_now
             });
         });
 
