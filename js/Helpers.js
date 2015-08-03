@@ -1,23 +1,48 @@
 Helpers = (function($) {
-    var settings = {
+    /**
+     * Опции по умолчанию, с которыми работает чат
+     * @type {{
+     * socket: null, (объект соединения)
+     * user_name: null, (имя пользователя)
+     * messages_obj: null, (холдер, в котором лежат сообщения)
+     * message_text_obj: null, (объект так нызваемой textarea, где вводится сообщение)
+     * error_auth_obj: null, (холдер, в который записываются ошибки авторизации)
+     * message_placeholder_obj: null, (объект плейсхолдера для вводимого сообшения как в ВК)
+     * send_btn_obj: null, (объект кнопки авторизации)
+     * login_form_obj: null, (объект формы регистрации)
+     * error_holder: null, (холдер, где отображаются ошибки с сетью)
+     * users_holder: null (холдер, где находятся участники чата)
+     * }}
+     */
+    var default_options = {
         socket: null,
         user_name: null,
         messages_obj: null,
         message_text_obj: null,
         error_auth_obj: null,
         message_placeholder_obj: null,
-        send_btn: null,
+        send_btn_obj: null,
         login_form_obj: null,
         error_holder: null,
         users_holder: null
     };
 
+    /**
+     * Функция конструктор, принимающая параметр options со значениями для конкретного случая
+     * @param options параметры
+     * @constructor
+     */
     function Helpers(options) {
-        $.extend(this, settings, options);
+        $.extend(this, default_options, options);
     }
 
     var methods = Helpers.prototype = new Object();
 
+    /**
+     * Добавляем новое сообщение к чату
+     * @param data данные о сообщении
+     * @private
+     */
     methods._addMsg = function(data){
 
         var cls = this,
@@ -52,6 +77,11 @@ Helpers = (function($) {
         cls.messages_obj.append(msg_content);
     };
 
+    /**
+     * Добавляем сообщение о входе нового пользователя в чат
+     * @param user_name имя пользователя
+     * @private
+     */
     methods._sendMessageAfterLogin = function(user_name){
 
         var cls = this,
@@ -71,6 +101,11 @@ Helpers = (function($) {
         cls.messages_obj.append(msg_content);
     }
 
+    /**
+     * Добавляем сообщения о выходе пользователя из чата
+     * @param user_name имя пользователя
+     * @private
+     */
     methods._sendMessageAfterLogout = function(user_name){
 
         var cls = this,
@@ -90,6 +125,11 @@ Helpers = (function($) {
         cls.messages_obj.append(msg_content);
     }
 
+    /**
+     * Добавляем пользователя в список участников чата
+     * @param user_name имя пользователя
+     * @private
+     */
     methods._addUserToList = function(user_name){
 
         var cls = this;
@@ -111,6 +151,11 @@ Helpers = (function($) {
 
     };
 
+    /**
+     * Удаляем пользователя из списка участников чата
+     * @param user_name имя пользователя
+     * @private
+     */
     methods._removeUserFromList = function(user_name){
 
         var cls = this;
@@ -119,6 +164,12 @@ Helpers = (function($) {
 
     };
 
+    /**
+     * Обрабатываем дату согласно часовому поясу
+     * @param date дата в UTC
+     * @returns {string} дата в часовом поясе клиента
+     * @private
+     */
     methods._processingDate = function(date){
 
         date = new Date(date);
@@ -130,6 +181,12 @@ Helpers = (function($) {
                 (date.getMinutes()<10?'0':'') + date.getMinutes();
     };
 
+    /**
+     * Заменяем HTML символу в сущности
+     * @param str строка
+     * @returns {XML|string} отформатированная строка
+     * @private
+     */
     methods._replaceChars = function(str) {
         return str
             .replace(new RegExp('<div>', 'ig'), '\n')
@@ -137,30 +194,52 @@ Helpers = (function($) {
             .replace(new RegExp('&nbsp;', 'ig'), ' ');
     }
 
+    /**
+     * Скролим к последнему сообщению
+     * @private
+     */
     methods._scrollToFinalMsg = function(){
         var cls = this;
 
         cls.messages_obj.parent().scrollTop(cls.messages_obj[0].scrollHeight);;
     }
 
+    /**
+     * Удаляем форму авторизации
+     * @private
+     */
     methods._removeAuthForm = function(){
         var cls = this;
 
         cls.login_form_obj.remove();
     };
 
+    /**
+     * Показываем ошибку авторизации пользователя
+     * @private
+     */
     methods._showAuthErrorMessage = function(){
         var cls = this;
 
         cls.error_auth_obj.show();
     };
 
+    /**
+     * Скрываем ошибку авторизации пользователя
+     * @private
+     */
     methods._hideAuthErrorMessage = function(){
         var cls = this;
 
         cls.error_auth_obj.hide();
     };
 
+    /**
+     * Получаем информацию о сдвиге курсора посимвольно
+     * @param el текущий элемент
+     * @returns {number} число символов, на которое сдвинулся курсор
+     * @private
+     */
     methods._getCaret = function(el) {
         if (el.selectionStart) {
             return el.selectionStart;
@@ -183,6 +262,10 @@ Helpers = (function($) {
         return 0;
     }
 
+    /**
+     * Навешиваем события после успешной авторизации пользователя
+     * @private
+     */
     methods._setAfterLoginEvents = function(){
 
         var cls = this;
@@ -202,7 +285,7 @@ Helpers = (function($) {
                     $(this).html(content.substring(0,caret)+"\n"+content.substring(caret,content.length));
                 }
                 else{
-                    cls.send_btn.trigger('click.send')
+                    cls.send_btn_obj.trigger('click.send')
                 }
             }
         });
@@ -244,7 +327,7 @@ Helpers = (function($) {
             cls._removeUserFromList(user_name);
         });
 
-        cls.send_btn.off('click.send').on('click.send', function () {
+        cls.send_btn_obj.off('click.send').on('click.send', function () {
             if($.trim(cls.message_text_obj.text()) === ''){
                 return;
             }
@@ -253,23 +336,42 @@ Helpers = (function($) {
 
             cls.message_text_obj.empty();
 
-            var now = new Date(),
-                utc_now = new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
-
             cls.socket.emit('send_message', {
                 message: text,
                 user_name: cls.user_name,
-                date: utc_now
+                date: null
             });
         });
 
     };
 
-    methods._setLoginEvents = function(user_name){
+    /**
+     * Обновления (чистка) данных при разрыве соединения
+     * @private
+     */
+    methods._reset = function(){
 
         var cls = this;
 
         cls._hideAuthErrorMessage();
+
+        // Удаляем все сообщения которые были
+        cls.messages_obj.find('tr:gt(0)').remove();
+
+        // Удаляем список онлайн пользователей
+        cls.users_holder.empty();
+    };
+
+    /**
+     * События, необходимые для авторизации пользователя
+     * @param user_name имя пользователя
+     * @private
+     */
+    methods._setLoginEvents = function(user_name){
+
+        var cls = this;
+
+        cls._reset();
 
         cls.user_name = user_name;
 
@@ -313,6 +415,9 @@ Helpers = (function($) {
 
     };
 
+    /**
+     * События, необходимые до авторизации пользователя
+     */
     methods.setEvents = function(){
 
         var cls = this;

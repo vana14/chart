@@ -54,6 +54,11 @@ io.sockets.on('connection', function (socket) {
     //подписываемся на событие message от клиента
     socket.on('send_message', function (message_data) {
         try {
+            var now = new Date(),
+                utc_now = new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
+
+            message_data.date = utc_now;
+
             messages.push(message_data);
 
             // Посылаем сообщение себе
